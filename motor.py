@@ -1,8 +1,8 @@
 from machine import Pin
 from micropython import const
-from utilty.encoder import Encoder
-from utilty.debounce import DebouncedInput
-from driver.m2619s import M2619S
+from .utilty.encoder import Encoder
+from .utilty.debounce import DebouncedInput
+from .driver.m2619s import M2619S
 
 CW = const(0)
 CCW = const(1)

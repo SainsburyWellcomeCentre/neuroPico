@@ -1,7 +1,7 @@
 from machine import Pin, I2C
 from micropython import const
-from driver.ws2812c import WS2812C
-from utilty.debounce import DebouncedInput
+from .driver.ws2812c import WS2812C
+from .utilty.debounce import DebouncedInput
 from .motor import Motor
 
 class NeuroPico:
