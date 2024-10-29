@@ -129,43 +129,43 @@ class VL53LX:
 
     def __init__(self, i2c: I2C):
         self.i2c = i2c
-        self.__load_patch()
-        self.__dev_init()
+        self._load_patch()
+        self._dev_init()
 
-    def __read_dat(self, mem_addr, length):
+    def _read_dat(self, mem_addr, length):
         return self.i2c.readfrom_mem(ADDRESS, mem_addr, length, addrsize=ADDRSIZE)
 
-    def __write_dat(self, mem_addr, buf):
+    def _write_dat(self, mem_addr, buf):
         self.i2c.writeto_mem(ADDRESS, mem_addr, buf, addrsize=ADDRSIZE)
 
-    def __load_patch(self):
-        self.__write_dat(R_FIRMWARE__ENABLE, b"\x00")  # firmware disable
-        self.__write_dat(R_POWER_MANAGEMENT__GO1_POWER_FORCE, b"\x01")  # power force enable
+    def _load_patch(self):
+        self._write_dat(R_FIRMWARE__ENABLE, b"\x00")  # firmware disable
+        self._write_dat(R_POWER_MANAGEMENT__GO1_POWER_FORCE, b"\x01")  # power force enable
 
         # load patch
-        self.__write_dat(R_PATCH__OFFSET_0, bytearray([0x29, 0xC9, 0x0E, 0x40, 0x28, 0x00]))
-        self.__write_dat(R_PATCH__ADDRESS_0, bytearray([0x03, 0x6D, 0x03, 0x6F, 0x07, 0x29]))
-        self.__write_dat(R_PATCH__JMP_ENABLES, bytearray([0x00, 0x07]))
-        self.__write_dat(R_PATCH__DATA_ENABLES, bytearray([0x00, 0x07]))
-        self.__write_dat(R_PATCH__CTRL, b"\x01")
+        self._write_dat(R_PATCH__OFFSET_0, bytearray([0x29, 0xC9, 0x0E, 0x40, 0x28, 0x00]))
+        self._write_dat(R_PATCH__ADDRESS_0, bytearray([0x03, 0x6D, 0x03, 0x6F, 0x07, 0x29]))
+        self._write_dat(R_PATCH__JMP_ENABLES, bytearray([0x00, 0x07]))
+        self._write_dat(R_PATCH__DATA_ENABLES, bytearray([0x00, 0x07]))
+        self._write_dat(R_PATCH__CTRL, b"\x01")
 
-        self.__write_dat(R_FIRMWARE__ENABLE, b"\x01")  # firmware enable again
+        self._write_dat(R_FIRMWARE__ENABLE, b"\x01")  # firmware enable again
 
-    def __dev_init(self):
+    def _dev_init(self):
 
-        self.__write_dat(0x0024, self.CONFIG_DATA)
+        self._write_dat(0x0024, self.CONFIG_DATA)
 
     def read_mm(self):
-        while not self.__is_data_ready():
+        while not self._is_data_ready():
             time.sleep_us(100)
 
-        raw = self.__read_dat(R_SYSTEM_RESULTS + 14, 2)
-        self.__clear_interrput()
+        raw = self._read_dat(R_SYSTEM_RESULTS + 14, 2)
+        self._clear_interrput()
         return (((raw[0] << 8) + raw[1]) * GAIN_FACTOR + 0x0400) / 0x0800
 
-    def __is_data_ready(self):
-        flag = int.from_bytes(self.__read_dat(R_GPIO__TIO_HV_STATUS, 1), "big") & 0x01
+    def _is_data_ready(self):
+        flag = int.from_bytes(self._read_dat(R_GPIO__TIO_HV_STATUS, 1), "big") & 0x01
         return True if flag == 0 else False
 
-    def __clear_interrput(self):
-        self.__write_dat(R_SYSTEM_INTERRUPT_CLEAR, b"\x01")
+    def _clear_interrput(self):
+        self._write_dat(R_SYSTEM_INTERRUPT_CLEAR, b"\x01")

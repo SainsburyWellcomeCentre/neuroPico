@@ -17,10 +17,10 @@ class DAC5571:
         val &= 0xFF
         ms = (val & 0xF0) >> 4 + ENABLE_MASK
         ls = (val & 0x0F) << 4
-        self.__write_dat(bytearray([ms, ls]))
+        self._write_dat(bytearray([ms, ls]))
 
     def disable(self):
-        self.__write_dat(bytearray([DISABLE_MASK, 0]))
+        self._write_dat(bytearray([DISABLE_MASK, 0]))
 
-    def __write_dat(self, buf):
+    def _write_dat(self, buf):
         self.i2c.writeto(ADDRESS, buf)
