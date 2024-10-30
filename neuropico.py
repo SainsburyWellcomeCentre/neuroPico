@@ -54,6 +54,8 @@ class NeuroPico:
     PIN_LVL_SWITCH_5 = const(14)
     PIN_LVL_SWITCH_6 = const(15)
 
+    CLK_SPEED = const(100_000)
+
     def __init__(self):
         self.LED = WS2812C(Pin(self.PIN_LED))
         self.BTNA = DebouncedInput(self.PIN_BTNA, DebouncedInput.High, debounce_ms=20)
@@ -79,5 +81,5 @@ class NeuroPico:
         )
         self.PORT7 = self.I2C
 
-        self.CLK_IN = UART(0)
+        self.CLK_IN = UART(0, rx=self.PIN_CLK_IN, buadrate=self.CLK_SPEED)
         self.CLK_nEN = Pin(self.PIN_CLK_nEN, Pin.OUT, 1)
