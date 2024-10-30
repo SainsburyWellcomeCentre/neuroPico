@@ -3,30 +3,29 @@ from machine import Pin
 
 
 class WS2812C(NeoPixel):
-    def __init__(self, pin: Pin, isOFF=True, colour=(0, 0, 0)):
+    def __init__(self, pin: Pin, isOff=True, colour=(0, 0, 0)):
         super().__init__(pin, 1)
         self.colour = colour
-        self.isOFF = isOFF
+        self.isOff = isOff
         self._update()
 
     def setColour(self, rgb):
         self.colour = rgb
         self.isOFF = rgb == (0, 0, 0)
-        self._update()
 
     def toggle(self):
-        self.isOFF = not (self.isOFF)
+        self.isOff = not (self.isOff)
         self._update()
 
     def on(self):
-        self.isOFF = False
+        self.isOff = False
         self._update()
 
     def off(self):
-        self.isOFF = True
+        self.isOff = True
         self._update()
 
     def _update(self):
-        newColour = (0, 0, 0) if self.isOFF else self.colour
+        newColour = (0, 0, 0) if self.isOff else self.colour
         self.fill(newColour)
         self.write()
