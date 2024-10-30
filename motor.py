@@ -98,9 +98,11 @@ class AutoPID(PID):
     def __init__(self, motor: Motor):
         super().__init__()
         self.target = 0
+        self.lock = False
         self._motor = motor
         self._update_timer = Timer(-1)
-        self._interval = 100
+        self._interval = 0.1
+        self._dt_offset = 0
 
     def init(self, kp, ki, kd, absMax, scale, mode, period_ms):
         self.kp = kp
@@ -113,5 +115,8 @@ class AutoPID(PID):
         self._update_timer.init(mode=Timer.PERIODIC, period=period_ms, callback=self._updateHandler)
 
     def _updateHandler(self, timer):
-        out = self.update(self._motor.encoder.pos, self.target, self._interval)
-        self._motor.setSpeed(round(out * self.scale))
+        if self.lock is False:
+            out = self.update(self._motor.encoder.pos, self.target, self._interval + self._dt_offset)
+            self._motor.setSpeed(round(out * self.scale))
+        else:
+            self._dt_offset += self._interval
