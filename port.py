@@ -11,9 +11,9 @@ class Port:
 
     DIG = const(4)
     ANG = const(5)
-    UART = const(6)
-    SPI = const(7)
-    I2C = const(8)
+    # UART = const(6)
+    # SPI = const(7)
+    # I2C = const(8)
 
     def __init__(self, pin_num_a, pin_num_b):
         self._pin_list = [pin_num_a, pin_num_b]
@@ -41,6 +41,8 @@ class Port:
         elif self.mode == Port.ANG:
             pin_temp = ADC(self._pin_list[self.PIN_B])
             return pin_temp.read_u16()
+        else:
+            return -1
 
     def _set(self, pin_index, logic):
         if self.mode == Port.DIG:
@@ -81,8 +83,8 @@ class DigitalPort(Port):
         super().__init__(pin_num_a, pin_num_b)
         self._pin_list.append([pin_num_c, pin_num_d])
         self._lvl_switch = Pin(pin_level_switch, Pin.OUT, 0)
-        self.spi = SPI(spi_id)
-        self.uart = UART(uart_id)
+        # self.spi = SPI(spi_id)
+        # self.uart = UART(uart_id)
         self.sck = self.cts = pin_num_a
         self.mosi = self.rts = pin_num_b
         self.miso = self.tx = pin_num_c
