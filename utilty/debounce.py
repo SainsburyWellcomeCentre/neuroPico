@@ -31,7 +31,7 @@ class DebouncedInput(Pin):
             self.callback(self.pin_num)
         self.irq(self._irqHandler, self._trigger_logic)
 
-    def _irqHandler(self, pin):
+    def _irqHandler(self, pin=-1):
         self._db_timer.init(
             mode=Timer.ONE_SHOT,
             period=self._debounce_ms,
@@ -39,5 +39,5 @@ class DebouncedInput(Pin):
         )
         self.irq(trigger=0)
 
-    def _doNothing(self, pin):
+    def _doNothing(self, pin=-1):
         return

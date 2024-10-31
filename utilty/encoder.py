@@ -20,7 +20,7 @@ class Encoder:
         self.pos = 0
         self.lock = False
 
-    def _irqHandler(self, pin):
+    def _irqHandler(self, pin=-1):
         if self.lock is False:
             if self._encoder_a.value() == 1:
                 self.pos += 1
