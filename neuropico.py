@@ -81,5 +81,5 @@ class NeuroPico:
         )
         self.PORT7 = self.I2C
 
-        self.CLK_IN = UART(0, rx=self.PIN_CLK_IN, buadrate=self.CLK_SPEED)
+        self.CLK_IN = UART(0, rx=self.PIN_CLK_IN, baudrate=self.CLK_SPEED)
         self.CLK_nEN = Pin(self.PIN_CLK_nEN, Pin.OUT, 1)

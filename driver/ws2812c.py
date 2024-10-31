@@ -13,6 +13,12 @@ class WS2812C(NeoPixel):
         self.colour = rgb
         self.isOFF = rgb == (0, 0, 0)
 
+    def value(self, val=-1):
+        if val != -1:
+            self.isOff = val
+            self._update()
+        return val
+
     def toggle(self):
         self.isOff = not (self.isOff)
         self._update()
