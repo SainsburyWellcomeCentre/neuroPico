@@ -12,12 +12,12 @@ STOP = const(2)
 
 
 class Motor(M2619S):
-    def __init__(self, pwm_pin_a, pwm_pin_b, enable_pin, encoder_pin_a, encoder_pin_b, i2c, pwm_freq=100_000):
+    def __init__(self, pwm_pin_a, pwm_pin_b, enable_pin, encoder_pin_a, encoder_pin_b, i2c, pwm_freq=10_000):
         super().__init__(pwm_pin_a, pwm_pin_b, pwm_freq)
 
         self._vm_ctrl = VoltageController(i2c)
 
-        self.pid = AutoPID(self)
+        self.pid = PIDcontroller(self)
 
         self.encoder = Encoder(encoder_pin_a, encoder_pin_b)
 
@@ -65,7 +65,7 @@ class Motor(M2619S):
         if self._limiter_b:
             self._limiter_b.disable()
 
-    def _limiterHandler(self, pin):
+    def _limiterHandler(self, pin=-1):
         if self._limiter_a and self.status == CW and pin == self._limiter_a.pin_num:
             self._pwm_a.duty_u16(0)
         elif self._limiter_b and self.status == CCW and pin == self._limiter_b.pin_num:
@@ -94,7 +94,7 @@ class VoltageController(DAC5571):
         return round(vdac * self._weight)
 
 
-class AutoPID(PID):
+class PIDcontroller(PID):
     def __init__(self, motor: Motor):
         super().__init__()
         self.target = 0
@@ -104,7 +104,7 @@ class AutoPID(PID):
         self._interval = 0.1
         self._dt_offset = 0
 
-    def init(self, kp, ki, kd, absMax, scale, mode, period_ms):
+    def init(self, kp, ki, kd, absMax, scale, mode, period_ms, isAuto=False):
         self.kp = kp
         self.kd = kd
         self.ki = ki
@@ -112,11 +112,17 @@ class AutoPID(PID):
         self.scale = scale
         self.mode = mode
         self._interval = period_ms / 1000
-        self._update_timer.init(mode=Timer.PERIODIC, period=period_ms, callback=self._updateHandler)
+        if isAuto:
+            self._update_timer.init(mode=Timer.PERIODIC, period=period_ms, callback=self.callback)
 
-    def _updateHandler(self, timer):
+    def callback(self, timer=-1):
         if self.lock is False:
             out = self.update(self._motor.encoder.pos, self.target, self._interval + self._dt_offset)
-            self._motor.setSpeed(round(out * self.scale))
+            speed = round(out * self.scale)
+         
+            self._motor.setSpeed(speed)
+            return out
+  
         else:
             self._dt_offset += self._interval
+            return 0
