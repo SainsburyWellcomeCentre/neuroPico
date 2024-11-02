@@ -8,6 +8,7 @@ R_ANGLE_RAW = const(12)
 
 class AS5600:
 
+    # TODO: add calibration
     def __init__(self, i2c: I2C):
         self.i2c = i2c
 

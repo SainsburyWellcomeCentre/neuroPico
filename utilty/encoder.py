@@ -21,6 +21,12 @@ class Encoder:
         self.lock = False
 
     def _irqHandler(self, pin=-1):
+        # TODO: add edge condition
+        # 0	1 0	0 -1
+        # 0	1 1 0 -2  (assume pin1 edges only)
+        # 1	1 0 0 +2  (assume pin1 edges only)
+        # 1	1 1 0 +1
+
         if self.lock is False:
             if self._encoder_a.value() == 1:
                 self.pos += 1

@@ -119,10 +119,10 @@ class PIDcontroller(PID):
         if self.lock is False:
             out = self.update(self._motor.encoder.pos, self.target, self._interval + self._dt_offset)
             speed = round(out * self.scale)
-         
+
             self._motor.setSpeed(speed)
             return out
-  
+
         else:
             self._dt_offset += self._interval
             return 0

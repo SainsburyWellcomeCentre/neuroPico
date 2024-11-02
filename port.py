@@ -79,6 +79,7 @@ class DigitalPort(Port):
     LOGIC_3V3 = const(0)
     LOGIC_5V = const(1)
 
+    # TODO: fix spi and uart initailisation
     def __init__(self, pin_num_a, pin_num_b, pin_num_c, pin_num_d, pin_level_switch, spi_id, uart_id):
         super().__init__(pin_num_a, pin_num_b)
         self._pin_list.append([pin_num_c, pin_num_d])
