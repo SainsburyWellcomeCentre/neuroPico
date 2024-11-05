@@ -28,3 +28,7 @@ class M2619S:
             self._pwm_a.duty_u16(-1 * speed)
 
         self.speed = speed
+
+    def setFrequency(self, freq):
+        self._pwm_a.freq = freq
+        self._pwm_b.freq = freq
