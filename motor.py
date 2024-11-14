@@ -35,7 +35,7 @@ class Motor(M2619S):
         elif self._limiter_b and direction == CCW and self._limiter_b.value == 0:
             self.set(0)
             self.status = STOP
-        elif speed:
+        elif speed != 0:
             self.set(speed)
             self.status = direction
         else:

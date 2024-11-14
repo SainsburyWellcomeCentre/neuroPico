@@ -18,8 +18,8 @@ class M2619S:
         speed = -65535 if speed < -65535 else speed
 
         if speed == 0:
-            self._pwm_b.duty_u16(0)
-            self._pwm_a.duty_u16(0)
+            self._pwm_b.duty_u16(65535)
+            self._pwm_a.duty_u16(65535)
         elif speed > 0:
             self._pwm_a.duty_u16(0)
             self._pwm_b.duty_u16(speed)
@@ -30,5 +30,5 @@ class M2619S:
         self.speed = speed
 
     def setFrequency(self, freq):
-        self._pwm_a.freq = freq
-        self._pwm_b.freq = freq
+        self._pwm_a.freq(freq)
+        self._pwm_b.freq(freq)
