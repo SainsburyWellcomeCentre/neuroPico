@@ -62,14 +62,16 @@ class AnalogPort(Port):
         super().__init__(pin_num_a, pin_num_b)
         self._amp = amp
         self.freq = freq
+        self.setGain(1)
+        self.setPWM(0)
 
     def setGain(self, gain):
-        if gain <= 0:
+        if gain < 0:
             raise ValueError("gain value cannot be negative.")
         self._amp.setGain(gain)
 
     def setPWM(self, duty):
-        if duty <= 0:
+        if duty < 0:
             raise ValueError("duty rate cannot be negative.")
         pwm = PWM(Pin(self._pin_list[Port.PIN_A]), freq=self.freq, duty_u16=0)
         pwm.duty_u16(duty)
