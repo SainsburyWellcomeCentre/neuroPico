@@ -3,19 +3,27 @@ import time
 from micropython import const
 
 ADDRESS = const(54)
-R_ANGLE_RAW = const(12)
+R_ANGLE_RAW = const(0x0C)
+R_ANGLE = const(0x0E)
+R_MAGNITUDE = const(0x1B)
 
 
 class AS5600:
 
-    # TODO: add calibration
     def __init__(self, i2c: I2C):
         self.i2c = i2c
 
-    def readAngle(self):
-        ang_raw = self._read_dat(R_ANGLE_RAW, 2)
-        ang = (ang_raw[0] * 256 + ang_raw[1]) * 360 / 4096
-        return round(ang, 3)
+    def read_angle(self):
+        return self._12_bit_decode(self._read_dat(R_ANGLE, 2))
+
+    def read_angle_raw(self):
+        return self._12_bit_decode(self._read_dat(R_ANGLE_RAW, 2))
+
+    def read_mag(self):
+        return self._12_bit_decode(self._read_dat(R_MAGNITUDE, 2))
+
+    def _12_bit_decode(self, buf):
+        return buf[0] * 256 + buf[1]
 
     def _read_dat(self, mem_addr, length):
         return self.i2c.readfrom_mem(ADDRESS, mem_addr, length)
