@@ -56,6 +56,9 @@ class NeuroPico:
 
     CLK_SPEED = const(100_000)
 
+    USB_CLOCK = const(0)
+    EXT_CLOCK = const(1)
+
     def __init__(self):
         self.LED = WS2812C(Pin(self.PIN_LED))
         self.BTNA = DebouncedInput(self.PIN_BTNA, DebouncedInput.High, debounce_ms=20)
@@ -82,4 +85,11 @@ class NeuroPico:
         self.PORT7 = self.I2C
 
         self.CLK_IN = UART(0, rx=self.PIN_CLK_IN, baudrate=self.CLK_SPEED)
-        self.CLK_nEN = Pin(self.PIN_CLK_nEN, Pin.OUT, 1)
+        self.CLK_nEN = Pin(self.PIN_CLK_nEN, Pin.OUT, value=1)
+
+    def setClockSource(self, src=EXT_CLOCK):
+        if src is self.EXT_CLOCK:
+            en = 1
+        elif src is self.USB_CLOCK:
+            en = 10
+        self.CLK_nEN.value(en)
