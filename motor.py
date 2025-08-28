@@ -19,7 +19,7 @@ class Motor(M2619S):
 
         self.pid = PIDcontroller(self)
 
-        self.encoder = Encoder(encoder_pin_a, encoder_pin_b)
+        self.encoder = Encoder(0, encoder_pin_a)
 
         self._enable = Pin(enable_pin, Pin.OUT, value=0)
         self.status = STOP
@@ -73,7 +73,7 @@ class Motor(M2619S):
 
 
 class VoltageController(DAC5571):
-    MAX_VOLTAGE = const(35.34)
+    MAX_VOLTAGE = const(35)
     BITS = const(8)
     VDD = const(3.3)
     OFFSET = const(0.297)
@@ -117,7 +117,7 @@ class PIDcontroller(PID):
 
     def callback(self, timer=-1):
         if self.lock is False:
-            out = self.update(self._motor.encoder.pos, self.target, self._interval + self._dt_offset)
+            out = self.update(self._motor.encoder.value, self.target, self._interval + self._dt_offset)
             speed = round(out * self.scale)
 
             self._motor.setSpeed(speed)
