@@ -91,5 +91,5 @@ class NeuroPico:
         if src is self.EXT_CLOCK:
             en = 1
         elif src is self.USB_CLOCK:
-            en = 10
+            en = 0
         self.CLK_nEN.value(en)
